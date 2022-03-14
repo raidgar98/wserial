@@ -1,0 +1,5 @@
+# usage: python -m pip install --user -r requirements.txt
+
+pyserial
+simple-websocket-server
+ordered-set
