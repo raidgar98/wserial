@@ -4,6 +4,7 @@ from simple_websocket_server import WebSocketServer, WebSocket
 
 from wserial.libs.logger import get_logger
 
+log = get_logger(module_name='Handler')
 wlog = get_logger(module_name='WS Server')
 hlog = get_logger(module_name='HTTP Server')
 
@@ -12,9 +13,28 @@ ENCODING = 'ascii'
 class Handler:
 	context = None
 	handle_function = None
+	close_function = None
 
 	def handle(data) -> tuple:
 		return Handler.handle_function(Handler.context, data)
+
+	def __enter__(self):
+		return self
+
+	def __exit__(self, exception_type, exception_value, exception_traceback):
+		if Handler.close_function:
+			Handler.close_function()
+
+		if exception_type == KeyboardInterrupt:
+			log.info('closing on user request')
+			return True
+		elif exception_type is not None:
+			log.error(f'cought error `{exception_type.__name__}`, with value: `{exception_value}`')
+			log.error(f'traceback: {exception_traceback}')
+			return False
+
+		return True
+
 
 class HttpHandler(BaseHTTPRequestHandler):
 
