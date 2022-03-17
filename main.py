@@ -11,7 +11,7 @@ from serial import Serial
 
 from wserial.libs.logger import get_logger
 from wserial.libs.serial import get_serial_port, serial_ports
-from wserial.libs.server import Handler, run_http_server, run_ws_server
+from wserial.libs.server import ENCODING, Handler, run_http_server, run_ws_server
 
 # CONSTS
 BOOL_PARAM = dict(nargs='?', type=bool, const=True, default=False)
@@ -65,7 +65,7 @@ def handler(port : Serial, data : str):
 
 		if WHITELIST is None or data in WHITELIST:
 			log.debug(f'writing to port: `{data}`')
-			port.write(data)
+			port.write(data.encode(ENCODING))
 	except Exception as e:
 		return (500, f'exception occured while writing to serial port: {e}')
 	return ok_result
