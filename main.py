@@ -31,7 +31,7 @@ args = arg_engine.parse_args(argv[1:])
 if args.list_only:
 	ports = serial_ports()
 	if len(ports):
-		print('Found serial ports:\n' + '\n - '.join())
+		print('Found serial ports:\n' + '\n - '.join(ports))
 	else:
 		print('Found no serial ports')
 	exit(0)
@@ -70,12 +70,17 @@ def handler(port : Serial, data : str):
 		return (500, f'exception occured while writing to serial port: {e}')
 	return ok_result
 
+def handler_destructor():
+	if Handler.context is not None and Handler.context.is_open():
+		Handler.context.close()
+
 # SETTING UP HANDLER CLASS
 Handler.context = get_serial_port(SERIAL_PORT)
 Handler.handle_function = handler
+Handler.close_function = handler_destructor
 
 # RUN SERVERS IN THREADS
-try:
+with Handler():
 	futures = []
 	with ProcessPoolExecutor(max_workers=2) as executor:
 		if WS_PORT > 0:
@@ -89,5 +94,4 @@ try:
 			exc = fut.exception()
 			if exc is not None:
 				print(f'got exception: {exc}')
-except KeyboardInterrupt:
-	log.info('stopping on user request')
+
