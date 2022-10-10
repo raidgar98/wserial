@@ -71,7 +71,7 @@ def handler(port : Serial, data : str):
 	return ok_result
 
 def handler_destructor():
-	if Handler.context is not None and Handler.context.is_open():
+	if Handler.context is not None and Handler.context.is_open:
 		Handler.context.close()
 
 # SETTING UP HANDLER CLASS

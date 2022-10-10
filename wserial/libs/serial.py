@@ -39,7 +39,7 @@ def serial_ports():
 def get_serial_port(name : str):
 	log.info(f'opening port: `{name}`')
 	serial_port = serial.Serial(name)
-	if serial_port.is_open():
+	if serial_port.is_open:
 		serial_port.close()
 	serial_port.open()
 	return serial_port
