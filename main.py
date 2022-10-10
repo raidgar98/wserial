@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
+# testing command: sudo socat PTY,link=/dev/ttyS10 PTY,link=/dev/ttyS11
+# /dev/ttyS10	-	write	socket
+# /dev/ttyS11	-	read	socket
+# credits: https://stackoverflow.com/a/10555885
+
 from argparse import ArgumentParser
 from concurrent.futures import Future, ProcessPoolExecutor
 from functools import partial
